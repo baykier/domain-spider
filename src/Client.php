@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * Author: Baykier<1035666345@qq.com> 
+ * Author: Baykier<1035666345@qq.com>
  * Date: 16-6-18
  * Time: 上午12:06
  */
@@ -12,6 +12,7 @@ use Baykier\DomainSpider\Params;
 use Psr\Log\LoggerInterface;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Dotenv\Dotenv;
 
 class Client
 {
@@ -32,7 +33,11 @@ class Client
      */
     public static function search($domain)
     {
-        $paramObj = new Params('your AccessKeyID','your AccessKeySecret',$domain);
+
+        $dotenv = (array) static::getEnv();
+
+        //var_dump($_ENV);die;
+        $paramObj = new Params($_ENV['ACCESS_KEY'],$_ENV['ACCESS_SECRET'],$domain);
 
         $params = $paramObj->getParams();
 
@@ -63,7 +68,7 @@ class Client
         catch(\Exception $e)
         {
             echo PHP_EOL;
-            echo 'something is error';
+            echo 'something is error[' . $e->getMessage() . ']';
             $file = $path . self::$errorFIle;
             static::log('Failed search domain:' . $domain,$file);
         }
@@ -93,5 +98,13 @@ class Client
         $log = new Logger('domain');
         $log->pushHandler(new StreamHandler($file,Logger::DEBUG));
         $log->addDebug($content);
+    }
+
+    /**
+     * @return array
+     */
+    protected static function getEnv():array
+    {
+        return (array) Dotenv::createImmutable(dirname(__DIR__))->load();
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * Author: Baykier<1035666345@qq.com> 
+ * Author: Baykier<1035666345@qq.com>
  * Date: 16-6-17
  * Time: 下午11:29
  */
@@ -23,4 +23,5 @@ while(true)
 {
     $domain =  $generate->generateDomain();
     Client::search($domain);
+    sleep(rand(1,5));
 }
